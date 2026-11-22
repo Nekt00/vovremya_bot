@@ -1,0 +1,109 @@
+services:
+  migrate:
+    build: .
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  bot:
+    build: .
+    command: ["python", "-m", "medication_reminder.telegram"]
+    env_file:
+      - .env
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication
+      MEDICATION_REDIS_URL: redis://redis:6379/0
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  reminder-worker:
+    build: .
+    command: ["python", "-m", "medication_reminder.reminders"]
+    env_file:
+      - .env
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication
+      MEDICATION_REDIS_URL: redis://redis:6379/0
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication
+      MEDICATION_REDIS_URL: redis://redis:6379/0
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: medication
+      POSTGRES_USER: medication
+      POSTGRES_PASSWORD: medication
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medication -d medication"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  test-postgres:
+    image: postgres:17-alpine
+    profiles: ["test"]
+    environment:
+      POSTGRES_DB: medication_test
+      POSTGRES_USER: medication
+      POSTGRES_PASSWORD: medication
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medication -d medication_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+

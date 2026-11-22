@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Вовремя — аватар Telegram</title>
+  <rect width="512" height="512" rx="128" fill="#0B6174"/>
+  <path d="m116 264 98 98" fill="none" stroke="#AEE9D2" stroke-width="60" stroke-linecap="round"/>
+  <path d="m212 362 186-212" fill="none" stroke="#FFFFFF" stroke-width="60" stroke-linecap="round"/>
+  <circle cx="398" cy="150" r="20" fill="#FF8E72"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Вовремя — концепт «Три приёма»</title>
+  <rect width="256" height="256" rx="64" fill="#17394A"/>
+  <rect x="104" y="38" width="48" height="92" rx="24" fill="#FFFFFF"/>
+  <rect x="104" y="38" width="48" height="46" rx="24" fill="#AEE9D2"/>
+  <g transform="rotate(120 128 128)">
+    <rect x="104" y="38" width="48" height="92" rx="24" fill="#FFFFFF"/>
+    <rect x="104" y="38" width="48" height="46" rx="24" fill="#FF8E72"/>
+  </g>
+  <g transform="rotate(240 128 128)">
+    <rect x="104" y="38" width="48" height="92" rx="24" fill="#FFFFFF"/>
+    <rect x="104" y="38" width="48" height="46" rx="24" fill="#5AC4DB"/>
+  </g>
+  <circle cx="128" cy="128" r="17" fill="#17394A"/>
+</svg>

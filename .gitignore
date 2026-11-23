@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 .DS_Store
 
 __pycache__/
@@ -11,3 +13,10 @@ __pycache__/
 
 tmp/
 *.log
+
+# Private key material and locally generated backups.
+*.pem
+*.key
+*.p12
+*.pfx
+backups/

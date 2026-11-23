@@ -43,8 +43,3 @@ docker compose -f compose.demo.yaml up --build
 - [Архитектура](docs/architecture.md)
 - [Правила расписаний](docs/scheduling.md)
 - [Эксплуатация и резервные копии](docs/operations.md)
-
-## Безопасность
-
-Не добавляйте в Git файлы `.env*`, ключи или резервные копии. В репозитории хранится
-только шаблон [.env.example](.env.example) без значений секретов.

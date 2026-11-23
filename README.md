@@ -12,6 +12,12 @@ Telegram-бот и Mini App для личных напоминаний о при
 
 > «Вовремя» не назначает лечение и не проверяет совместимость препаратов.
 
+## Mini App
+
+| Сегодня | Курсы | История |
+| --- | --- | --- |
+| ![Экран «Сегодня»](assets/screenshots/mini-app-today.png) | ![Экран «Курсы»](assets/screenshots/mini-app-regimens.png) | ![Экран «История»](assets/screenshots/mini-app-history.png) |
+
 ## Быстрый старт
 
 ```bash

@@ -506,7 +506,12 @@ class FamilyMutationResponse(BaseModel):
 @router.get("/local-session", response_model=LocalSessionResponse)
 async def local_session(request: Request) -> LocalSessionResponse:
     settings: Settings = request.app.state.settings
-    if not _is_direct_local_request(request) or settings.environment != "local":
+    if (
+        not _is_direct_local_request(
+            request, allow_docker_bridge=settings.local_session_allow_docker_bridge
+        )
+        or settings.environment != "local"
+    ):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Not found")
     if settings.telegram_bot_token is None:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Telegram bot is not configured")
@@ -1553,8 +1558,10 @@ def _report_response(report: MedicationReport) -> MedicationReportResponse:
     )
 
 
-def _is_direct_local_request(request: Request) -> bool:
-    if request.client is None or request.client.host not in {"127.0.0.1", "::1"}:
+def _is_direct_local_request(request: Request, *, allow_docker_bridge: bool = False) -> bool:
+    if request.client is None:
+        return False
+    if not allow_docker_bridge and request.client.host not in {"127.0.0.1", "::1"}:
         return False
     if request.url.hostname not in {"127.0.0.1", "localhost", "::1"}:
         return False

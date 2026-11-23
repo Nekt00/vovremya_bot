@@ -21,6 +21,23 @@ uv run uvicorn medication_reminder.main:app --reload
 
 Проверка состояния приложения доступна по адресу `http://localhost:8000/health`.
 
+### Демо Mini App
+
+Изолированный стенд создаёт временную PostgreSQL-базу с фиктивными назначениями и
+открывает Mini App на `http://127.0.0.1:8002/mini-app`. Он не использует `.env`,
+Telegram-бота или основную базу данных.
+
+```bash
+docker compose -f compose.demo.yaml up --build
+```
+
+Данные PostgreSQL хранятся только во временной памяти контейнера. Остановить и удалить
+стенд можно командой:
+
+```bash
+docker compose -f compose.demo.yaml down
+```
+
 Для запуска PostgreSQL, Redis, применения миграций и запуска Telegram polling:
 
 ```bash

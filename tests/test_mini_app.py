@@ -182,6 +182,7 @@ def test_local_session_rejects_requests_forwarded_by_public_tunnel() -> None:
     assert _is_direct_local_request(direct) is True
     assert _is_direct_local_request(forwarded) is False
     assert _is_direct_local_request(remote_with_localhost_host) is False
+    assert _is_direct_local_request(remote_with_localhost_host, allow_docker_bridge=True) is True
 
 
 @pytest.mark.asyncio

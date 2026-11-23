@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: medication_demo
+      POSTGRES_USER: medication
+      POSTGRES_PASSWORD: medication
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medication -d medication_demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  migrate:
+    build: .
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication_demo
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  demo-seed:
+    build: .
+    command: ["python", "scripts/seed_demo.py"]
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication_demo
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  mini-app:
+    build: .
+    command: ["uvicorn", "medication_reminder.mini_app_local:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      MEDICATION_ENVIRONMENT: local
+      MEDICATION_DATABASE_URL: postgresql+asyncpg://medication:medication@postgres:5432/medication_demo
+      MEDICATION_TELEGRAM_BOT_TOKEN: 1000000:demo-only-token
+      MEDICATION_LOCAL_SESSION_ALLOW_DOCKER_BRIDGE: "true"
+    ports:
+      - "127.0.0.1:8002:8000"
+    depends_on:
+      demo-seed:
+        condition: service_completed_successfully

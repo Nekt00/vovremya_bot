@@ -16,6 +16,7 @@ COPY pyproject.toml README.md alembic.ini ./
 COPY src ./src
 COPY migrations ./migrations
 COPY assets ./assets
+COPY scripts ./scripts
 
 RUN python -m pip install --upgrade pip && python -m pip install .
 

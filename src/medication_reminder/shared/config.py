@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     telegram_bot_token: SecretStr | None = None
     telegram_mini_app_url: str | None = None
     telegram_admin_ids: tuple[int, ...] = ()
+    local_session_allow_docker_bridge: bool = False
 
     @field_validator("telegram_admin_ids")
     @classmethod
